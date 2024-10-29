@@ -1,3 +1,16 @@
+<?php
+session_start();
+include "../config/koneksi.php"; // Koneksi ke database
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
+    header("Location: ../index.php");
+    exit();
+}
+
+// Mengambil data tujuan
+$destinations = $conn->query("SELECT * FROM destinations");
+?>
+
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -13,16 +26,69 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-    <link rel="stylesheet" href="user/css/normalize.min.css">
-    <link rel="stylesheet" href="user/css/bootstrap.min.css">
-    <link rel="stylesheet" href="user/css/jquery.fancybox.css">
-    <link rel="stylesheet" href="user/css/flexslider.css">
-    <link rel="stylesheet" href="user/css/styles.css">
-    <link rel="stylesheet" href="user/css/queries.css">
-    <link rel="stylesheet" href="user/css/etline-font.css">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.css">
+    <link rel="stylesheet" href="css/flexslider.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/queries.css">
+    <link rel="stylesheet" href="css/etline-font.css">
     <link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <script src="user/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <style>
+        .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+    border-radius: 10px; /* Lengkungkan border tabel */
+}
+
+.table thead {
+    background-color: #3d4351; /* Warna latar belakang untuk header */
+    color: white; /* Warna teks untuk header */
+}
+
+.table th, .table td {
+    padding: 12px 15px; /* Ruang di dalam sel */
+    border: 1px solid #dddddd; /* Garis batas */
+    color: white; /* Warna teks untuk semua sel */
+}
+
+.table tbody tr {
+    transition: background-color 0.3s; /* Efek transisi untuk hover */
+}
+
+.table tbody tr:hover {
+    background-color: #ffffff59; /* Warna latar belakang saat hover */
+    color: black; /* Warna teks saat hover, jika ingin berbeda */
+}
+
+.table th {
+    position: sticky; /* Membuat header tetap di atas saat scroll */
+    top: 0;
+}
+
+/* Membuat border melengkung di setiap sel */
+.table th:first-child {
+    border-top-left-radius: 5px; /* Sudut kiri atas */
+}
+
+.table th:last-child {
+    border-top-right-radius: 5px; /* Sudut kanan atas */
+}
+
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 5px; /* Sudut kiri bawah */
+}
+
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 5px; /* Sudut kanan bawah */
+}
+
+    </style>
 </head>
 <body id="top">
     <!--[if lt IE 8]>
@@ -32,13 +98,14 @@
         <section class="navigation">
             <header>
                 <div class="header-content">
-                    <div class="logo"><a href="#"><img src="user/img/logo3.png" alt="Sedna logo"></a></div>
+                    <div class="logo"><a href="#"><img src="img/logo3.png" alt="Sedna logo"></a></div>
                     <div class="header-nav">
                         <nav>
                             <ul class="primary-nav">
                                 <li><a href="#features">Schedule</a></li>
                                 <li><a href="#assets">Trains Available</a></li>
-                                <li><a href="user/view_destinations.php">Destination List</a></li>
+                                <li><a href="#blog">Destination List</a></li>
+                                <li><a href="#download">Destination List</a></li>
                                 <li><a href="#download">Booking</a></li>
                                 <li><a href="#download">Transaction</a></li>
                             </ul>
@@ -57,9 +124,35 @@
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="hero-content text-center">
-                        <h1>Welcome To Btn Express Train</h1>
-                        <p class="intro">Introducing “BET”. A fastest train in the world</p>
-                        <a href="#" class="btn btn-fill btn-large btn-margin-right">View Schedule</a> <a href="#" class="btn btn-accent btn-large">View Available Trains</a>
+                        
+                <div class="main-content" style="
+    padding: 10px;
+">
+                    <h2 class="text-center mb-4" style="color: white;">Destination List</h2>
+                    <table class="table" style="border-radius: 15px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Destination</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $no = 0;
+                            while ($destination = $destinations->fetch_assoc()):
+                            $no++;
+                            ?>
+                                <tr>
+                                    <th scope="row"><?= $no; ?></th>
+                                    <td><?php echo $destination['destination_name']; ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                    <a href="../user_dashboard.php" class="btn btn-secondary">Back</a>
+                </div>
+
+
                     </div>
                 </div>
             </div>
@@ -89,10 +182,10 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
     <script src="bower_components/retina.js/dist/retina.js"></script>
-    <script src="user/js/jquery.fancybox.pack.js"></script>
-    <script src="user/js/vendor/bootstrap.min.js"></script>
-    <script src="user/js/scripts.js"></script>
-    <script src="user/js/jquery.flexslider-min.js"></script>
+    <script src="js/jquery.fancybox.pack.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/jquery.flexslider-min.js"></script>
     <script src="bower_components/classie/classie.js"></script>
     <script src="bower_components/jquery-waypoints/lib/jquery.waypoints.min.js"></script>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -106,3 +199,4 @@
     </script>
 </body>
 </html>
+
