@@ -1,30 +1,3 @@
-<?php
-session_start();
-include 'config/koneksi.php';
-
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    // Query untuk memeriksa user
-    $result = $conn->query("SELECT * FROM users WHERE username='$username' AND password='$password'");
-    
-    // Cek jika hasil query ditemukan
-    if ($result && $result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role'] = $user['role'];
-
-        // Arahkan berdasarkan peran user
-        if ($user['role'] === 'admin') {
-            header("Location:dashboard_admin.php");
-        } else {
-            header("Location:user_dashboard.php");
-        }
-        exit();
-    } 
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -33,21 +6,25 @@ if (isset($_POST['login'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Login</title>
+        <title>Register</title>
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
-    <body class="bg-">
+    <body class="bg-primary">
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
                 <main>
                     <div class="container">
                         <div class="row justify-content-center">
-                            <div class="col-lg-5">
+                            <div class="col-lg-7">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header bg-primary"><h3 class="text-center font-weight-dark my-4">Login</h3></div>
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
                                     <div class="card-body">
-                                        <form method="POST">
+                                        <form method="POST" action="admin/register_action.php">
+                                            <div class="form-group">
+                                                <label>Full Name</label>
+                                                <input type="text" class="form-control" name="full_nm" placeholder="Input Full Name" required>
+                                            </div></br>
                                             <div class="form-group">
                                                 <label>Username</label>
                                                 <input type="text" class="form-control" name="username" placeholder="Input Username" required>
@@ -56,11 +33,13 @@ if (isset($_POST['login'])) {
                                                 <label>Password</label>
                                                 <input type="password" class="form-control" name="password" placeholder="Input Password" required>
                                             </div></br>
-                                            <button type="submit" class="btn btn-primary btn-block" name="login">Login</button>
+                                            <div class="mt-4 mb-0">
+                                                <button type="submit" class="btn btn-primary btn-block" name="register">Register</button>
+                                            </div>
                                         </form>
                                     </div>
-                                    <div class="card-footer text-center py-3 bg-primary">
-                                        <div class="small"><a href="register.php"style="color:#fff;">Need an account? Sign up!</a></div>
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small"><a href="index.php">Have an account? Go to login</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -86,4 +65,4 @@ if (isset($_POST['login'])) {
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
     </body>
-</html> 
+</html>

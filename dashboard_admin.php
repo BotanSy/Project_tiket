@@ -27,8 +27,8 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <a class="sidebar-brand brand-logo" href="index.html"><img src="user/img/logo_1.png" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="user/img/logo_1.png" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo" href="dashboard_admin.php"><img src="user/img/logo_1.png" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini" href="dashboard_admin.php"><img src="user/img/logo_1.png" alt="logo" /></a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -232,14 +232,14 @@
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                  <a class="dropdown-item preview-item" href="logout.php">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>
                       </div>
                     </div>
-                    <div class="preview-item-content">
-                      <p href="Logout.php" class="preview-subject mb-1">Log out</p>
+                    <div class="preview-item-content" action="Logout.php">
+                      <p action="Logout.php" class="preview-subject mb-1">Log out</p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
