@@ -1,14 +1,28 @@
 <?php
 session_start();
-include "../config/koneksi.php"; // Koneksi ke database
+include '../config/koneksi.php';
 
+// Pastikan hanya user yang bisa mengakses halaman ini
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header("Location: ../index.php");
     exit();
 }
 
-// Mengambil data tujuan
-$destinations = $conn->query("SELECT * FROM destinations");
+// Ambil data tujuan
+$destinations = mysqli_query($conn, "SELECT * FROM destinations");
+
+// Ambil jadwal dan jumlah kursi yang tersedia
+$schedules = mysqli_query($conn, "
+    SELECT 
+        schedules.id AS schedule_id, 
+        destinations.destination_name, 
+        trains.code, 
+        trains.available_seats, 
+        schedules.departure_day
+    FROM schedules
+    JOIN destinations ON schedules.destination_id = destinations.id
+    JOIN trains ON schedules.train_id = trains.id
+");
 ?>
 
 <!doctype html>
@@ -36,6 +50,14 @@ $destinations = $conn->query("SELECT * FROM destinations");
     <link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <style>
+        .input-numberr {
+            background-color: dimgray;
+        }
+        .tr tr:hover {
+            background-color: #ff5274; /* Warna saat hover */
+        }
+    </style>
 </head>
 <body id="top">
     <section class="hero">
@@ -63,34 +85,39 @@ $destinations = $conn->query("SELECT * FROM destinations");
                 </div>
             </header>
         </section>
+        
         <div class="container">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="hero-content text-center">
                         
-                <div class="main-content" style="
-    padding: 10px;
-">
-                    <h2 class="text-center mb-4" style="color: white;">Destination List</h2>
+                <div class="main-content" style="padding: 10px;">
+                    <h2 class="text-center mb-4" style="color: white;">Booking</h2>
                     <table class="table table-hover" style="border-radius: 15px;color: white; text-align: left;">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Destination</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $no = 0;
-                            while ($destination = $destinations->fetch_assoc()):
-                            $no++;
-                            ?>
-                                <tr>
-                                    <th scope="row"><?= $no; ?></th>
-                                    <td><?php echo $destination['destination_name']; ?></td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
+                    <thead>
+                    <tr>
+                        <th>Destination</th>
+                        <th>Train Code</th>
+                        <th>Departure Day</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($schedule = mysqli_fetch_assoc($schedules)) { ?>
+                        <tr>
+                            <td><?php echo $schedule['destination_name']; ?></td>
+                            <td><?php echo $schedule['code']; ?></td>
+                            <td><?php echo $schedule['departure_day']; ?></td>
+                            <td>
+                                <form action="checkout.php" method="post">
+                                    <input type="hidden" name="schedule_id" value="<?php echo $schedule['schedule_id']; ?>">
+                                    <input class="input-numberr"type="number" name="quantity" min="1" max="<?php echo $schedule['available_seats']; ?>" required>
+                                    <button type="submit" class="btn btn-success">Select</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
                     </table>
                     <a href="../user_dashboard.php" class="btn btn-secondary">Back</a>
                 </div>
@@ -142,4 +169,3 @@ $destinations = $conn->query("SELECT * FROM destinations");
     </script>
 </body>
 </html>
-

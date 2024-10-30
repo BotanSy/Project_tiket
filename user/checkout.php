@@ -36,7 +36,7 @@ if (isset($_POST['destination_id']) && isset($_POST['departure_day']) && isset($
 
         if (mysqli_query($conn, $query)) {
             // Alihkan pengguna ke confirm_admin.php setelah pemesanan berhasil
-            header("Location: index1.php?order_id=" . mysqli_insert_id($conn));
+            header("Location: booking.php?order_id=" . mysqli_insert_id($conn));
             exit();
         } else {
             echo "Error: " . mysqli_error($conn);
@@ -74,7 +74,7 @@ if (isset($_POST['schedule_id']) && isset($_POST['quantity'])) {
 
         if (mysqli_query($conn, $query)) {
             // Alihkan pengguna ke confirm_admin.php setelah pemesanan berhasil
-            header("Location: ../dasboard_user.php?order_id=" . mysqli_insert_id($conn));
+            header("Location: booking.php?order_id=" . mysqli_insert_id($conn));
             exit();
         } else {
             echo "Error: " . mysqli_error($conn);
